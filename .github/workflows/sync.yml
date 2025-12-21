@@ -1,0 +1,32 @@
+name: Weekly Sync Data Branches
+
+permissions:
+  contents: write
+
+on:
+  schedule:
+    # 北京时间周一早上 8:00 (UTC 00:00)
+    - cron: '0 0 * * 1'
+  workflow_dispatch: # 手动触发按钮
+
+jobs:
+  sync_branches:
+    runs-on: ubuntu-latest
+    name: Syncing Data Branches
+    strategy:
+      fail-fast: false
+      matrix:
+        # 只同步这三个数据分支，不动 master
+        branch: [release, sing, meta]
+    
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v3
+
+      - name: Sync ${{ matrix.branch }} branch
+        uses: repo-sync/github-sync@v2
+        with:
+          source_repo: "MetaCubeX/meta-rules-dat"
+          source_branch: "${{ matrix.branch }}"
+          destination_branch: "${{ matrix.branch }}"
+          github_token: ${{ secrets.ACTION_PAT }} # 记得确保 Secret 还在
