@@ -29,7 +29,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          repository: MetaCubeX/meta-rules-dat
+          repository: Maozai-Teng/meta-rules-dat
 
       - name: Checkout Loyalsoldier/domain-list-custom
         uses: actions/checkout@v4
@@ -43,10 +43,10 @@ jobs:
           repository: v2fly/domain-list-community
           path: community
 
-      - name: Checkout MetaCubeX/meta-rules-converter
+      - name: Checkout Maozai-Teng/meta-rules-converter
         uses: actions/checkout@v4
         with:
-          repository: MetaCubeX/meta-rules-converter
+          repository: Maozai-Teng/meta-rules-converter
           path: convert
 
       - name: Checkout cokebar/gfwlist2dnsmasq
@@ -58,7 +58,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.22'
+          go-version: "1.22"
           cache-dependency-path: ./custom/go.sum
 
       - name: Generate GFWList domains
@@ -83,7 +83,7 @@ jobs:
         run: |
           # curl -sSL ${CUSTOM_DIRECT} | grep -v google | grep -v manhua | grep -v ooklaserver | grep -v "acg.rip" | perl -ne '/^((full|regexp|keyword):[^:]+)(\n$|:@.+)/ && print "$1\n"' | sort --ignore-case -u > direct-reserve.txt
           curl -sSL ${CUSTOM_PROXY} | grep -Ev ":@cn" | perl -ne '/^((full|regexp|keyword):[^:]+)(\n$|:@.+)/ && print "$1\n"' | sort --ignore-case -u > proxy-reserve.txt
-          
+
       - name: Add proxy, direct and reject domains from "hidden" branch to appropriate temp files
         run: |
           cat ./resouces/proxy.txt >> temp-proxy.txt
@@ -213,7 +213,7 @@ jobs:
         env:
           NO_SKIP: true
         run: |
-          go install -trimpath -ldflags="-s -w -buildid=" github.com/metacubex/geo/cmd/geo@master
+          go install -trimpath -ldflags="-s -w -buildid=" github.com/Maozai-Teng/geo/cmd/geo@master
           geo convert site -i v2ray -o sing -f geosite.db ./custom/publish/geosite.dat
           geo convert site -i v2ray -o sing -f geosite-lite.db ./community/geosite-lite.dat
           geo convert ip -i v2ray -o sing -f geoip.db ./geoip.dat
@@ -342,28 +342,27 @@ jobs:
 
       - name: Git push assets to "sing-rule" branch
         run: |
-            cd sing-rule || exit 1
-            git init
-            git config --local user.name "github-actions[bot]"
-            git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git checkout -b sing
-            git add .
-            git commit -m "Released on ${{ env.BUILDTIME }}"
-            git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
-            git push -f -u origin sing
+          cd sing-rule || exit 1
+          git init
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b sing
+          git add .
+          git commit -m "Released on ${{ env.BUILDTIME }}"
+          git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
+          git push -f -u origin sing
 
       - name: Git push assets to "meta-rule" branch
         run: |
-            cd meta-rule || exit 1
-            git init
-            git config --local user.name "github-actions[bot]"
-            git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git checkout -b meta
-            git add .
-            git commit -m "Released on ${{ env.BUILDTIME }}"
-            git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
-            git push -f -u origin meta
-
+          cd meta-rule || exit 1
+          git init
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b meta
+          git add .
+          git commit -m "Released on ${{ env.BUILDTIME }}"
+          git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
+          git push -f -u origin meta
 
       - name: Purge jsdelivr CDN
         run: |
