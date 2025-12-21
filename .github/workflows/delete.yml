@@ -1,8 +1,8 @@
 name: Delete old workflow runs
 on:
+  workflow_dispatch: # 允许手动触发，方便我们现在测试
   schedule:
-    - cron: '0 0 * * 0'
-# Run monthly, at 00:00 on the 1st day of month.
+    - cron: '0 0 * * 0' # 每周日 0:00 自动运行
 
 jobs:
   del_runs:
@@ -11,6 +11,6 @@ jobs:
       - name: Delete workflow runs
         uses: GitRML/delete-workflow-runs@main
         with:
-          token: ${{ secrets.AUTH_PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }} # 使用系统内置令牌
           repository: ${{ github.repository }}
-          retain_days: 7
+          retain_days: 7 # 保留最近 7 天的记录
