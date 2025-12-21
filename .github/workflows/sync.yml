@@ -1,0 +1,38 @@
+name: Weekly Sync Data Branches
+
+permissions:
+  contents: write
+
+on:
+  # ==========================================================
+  # 【恢复自动同步的方法】
+  # 如果哪天你想恢复每周一自动同步，请取消下面 schedule 和 - cron 两行的注释（删掉 # 号）
+  # ==========================================================
+  # schedule:
+  #   - cron: '0 0 * * 1' # 设定为每周一北京时间早上 8:00 自动运行
+
+  # 【当前状态】
+  # 已关闭定时触发，仅保留下方手动触发按钮
+  workflow_dispatch: 
+
+jobs:
+  sync_branches:
+    runs-on: ubuntu-latest
+    name: Syncing Data Branches
+    strategy:
+      fail-fast: false
+      matrix:
+        # 这里的 branch 代表要从原作者那里同步的分支名字
+        branch: [release, sing, meta]
+    
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v3
+
+      - name: Sync ${{ matrix.branch }} branch
+        uses: repo-sync/github-sync@v2
+        with:
+          source_repo: "MetaCubeX/meta-rules-dat"
+          source_branch: "${{ matrix.branch }}"
+          destination_branch: "${{ matrix.branch }}"
+          github_token: ${{ secrets.ACTION_PAT }} # 请确保你之前设置过 ACTION_PAT 密钥
