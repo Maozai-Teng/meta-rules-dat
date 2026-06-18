@@ -27,7 +27,7 @@ jobs:
     
     steps:
       - name: Checkout master
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
 
       - name: Sync ${{ matrix.branch }} branch
         uses: repo-sync/github-sync@v2
